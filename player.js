@@ -38,7 +38,7 @@ var responseHandler = function(body) {
 };
 
 var bio = function($) {
-
+  var inner_table = $('#content table table');
 };
 var dashboard = function($) {
 
