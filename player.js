@@ -1,4 +1,4 @@
-var request = require('request-promise'),
+var request = require('./requestq'),
     cheerio = require('cheerio');
 
 
@@ -6,108 +6,178 @@ var base_url = 'http://www.fangraphs.com';
 
 var seasonStats = module.exports.seasonStats = function(pid) {
   return request(base_url + '/statss.aspx?playerid=' + pid)
-  .then(function(response) {
-    return responseHandler(response);
-  }, function(err) {
-    console.log('player: ' + pid + ' not found');
-    return null;
-  });
+    .then(function(response) {
+      return responseHandler(response.body);
+    }, function(err) {
+      console.error('error:' + pid + ' not found');
+      return null;
+    }).catch(function(err) {
+      console.error('error: ' + err.message);
+      return null;
+    });
 };
 
 var responseHandler = function(body) {
-  var $                      = cheerio.load(body);
-  var bio                    = getBio($);
-  var dashboard              = getDashboard($);
-  var standard               = getStandard($);
-  var advanced               = getAdvanced($);
-  var battedBall             = getBattedBall($);
-  var moreBattedBall         = getMoreBattedBall($);
-  var winProb                = getWinProbability($);
-  var pitchType              = getPitchType($);
-  var pitchFxType            = getPitchFxType($);
-  var pitchFxVelocity        = getPitchFxVelocity($);
-  var pitchValues            = getPitchValues($);
-  var pitchFxValues          = getPitchFxValues($);
-  var pitchFxValuesPer100    = getPitchFxValuesPer100($);
-  var plateDiscipline        = getPlateDiscipline($);
-  var pitchFxPlateDiscipline = getpitchFxPlateDiscipline($);
-  var fielding               = getFielding($);
-  var advancedFielding       = getAdvancedFielding($);
-  var insideEdgeFielding     = getInsideEdgeFielding($);
-  var value                  = getValue($);
+  var $ = cheerio.load(body);
+
+  if ($("#content table").length < 1) {
+    throw new Error('player not found');
+  }
+
+  var bio  = getBio($);
+  return {
+    name                   : bio.name,
+    dob                    : bio.dob,
+    bats                   : bio.bats,
+    throws                 : bio.throws,
+    height                 : bio.height,
+    weight                 : bio.weight,
+    position               : bio.position,
+    draft                  : bio.draft,
+    contract               : bio.contract,
+    dashboard              : getDashboard($),
+    standard               : getStandard($),
+    advanced               : getAdvanced($),
+    battedBall             : getBattedBall($),
+    moreBattedBall         : getMoreBattedBall($),
+    winProbability         : getWinProbability($),
+    pitchType              : getPitchType($),
+    pitchFxType            : getPitchFxType($),
+    pitchFxVelocity        : getPitchFxVelocity($),
+    pitchValues            : getPitchValues($),
+    pitchFxValues          : getPitchFxValues($),
+    pitchFxValuesPer100    : getPitchFxValuesPer100($),
+    plateDiscipline        : getPlateDiscipline($),
+    pitchFxPlateDiscipline : getPitchFxPlateDiscipline($),
+    fielding               : getFielding($),
+    advancedFielding       : getAdvancedFielding($),
+    insideEdgeFielding     : getInsideEdgeFielding($),
+    value                  : getValue($),
+  };
 };
 
-var bio = function($) {
-  var inner_table = $('#content table table');
+var getBio = function($) {
+  
+  var bio_cell = $('#content table table td');
+
+  return {
+    name: getName(bio_cell),
+    dob: getDob(bio_cell),
+    bats: getBats(bio_cell),
+    throws: getThrows(bio_cell),
+    height: getHeight(bio_cell),
+    weight: getWeight(bio_cell),
+    position: getPosition(bio_cell),
+    draft: getDraft(bio_cell),
+    contract: getContract(bio_cell)
+  };
 };
-var dashboard = function($) {
+
+var getName = function(bio_cell) {
+  return bio_cell.find('strong').html();
+};
+
+var getDob = function(bio_cell) {
+  return /\d{1,2}\/\d{1,2}\/\d{4}/
+    .exec(bio_cell.find('div:nth-of-type(3)').html())[0];
+};
+
+var getBats = function(bio_cell) {
+  
+};
+
+var getThrows = function(bio_cell) {
+
+};
+
+var getHeight = function(bio_cell) {
+
+};
+
+var getWeight = function(bio_cell) {
+
+};
+
+var getPosition = function(bio_cell) {
+
+};
+
+var getDraft = function(bio_cell) {
+
+};
+
+var getContract = function(bio_cell) {
+
+};
+
+var getDashboard = function($) {
 
 };
              
-var standard = function($) {
+var getStandard = function($) {
 
 };
               
-var advanced = function($) {
+var getAdvanced = function($) {
 
 };
               
-var battedBall = function($) {
+var getBattedBall = function($) {
 
 };
             
-var moreBattedBall = function($) {
+var getMoreBattedBall = function($) {
 
 };
         
-var winProb = function($) {
+var getWinProbability = function($) {
 
 };
                
-var pitchType = function($) {
+var getPitchType = function($) {
 
 };
              
-var pitchFxType = function($) {
+var getPitchFxType = function($) {
 
 };
            
-var pitchFxVelocity = function($) {
+var getPitchFxVelocity = function($) {
 
 };
        
-var pitchValues = function($) {
+var getPitchValues = function($) {
 
 };
            
-var pitchFxValues = function($) {
+var getPitchFxValues = function($) {
 
 };
          
-var pitchFxValuesPer100 = function($) {
+var getPitchFxValuesPer100 = function($) {
 
 };
    
-var plateDiscipline = function($) {
+var getPlateDiscipline = function($) {
 
 };
        
-var pitchFxPlateDiscipline = function($) {
+var getPitchFxPlateDiscipline = function($) {
 
 };
 
-var fielding = function($) {
+var getFielding = function($) {
 
 };
               
-var advancedFielding = function($) {
+var getAdvancedFielding = function($) {
 
 };
       
-var insideEdgeFielding = function($) {
+var getInsideEdgeFielding = function($) {
 
 };
     
-var value = function($) {
+var getValue = function($) {
 
 };
