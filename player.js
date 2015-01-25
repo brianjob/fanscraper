@@ -82,32 +82,49 @@ var getLowerText = function(bio_cell) {
 };
 
 var getDob = function(bio_cell) {
-  return /\d{1,2}\/\d{1,2}\/\d{4}/
-    .exec(getLowerText(bio_cell))[0];
+  var result = /\d{1,2}\/\d{1,2}\/\d{4}/.exec(getLowerText(bio_cell));
+  if (result.length < 1)
+    throw new Error("Couldn't retrieve dob");
+  return result[0];
 };
 
 var getBats = function(bio_cell) {
-  return /([LRB])\/[LRB]/.exec(getLowerText(bio_cell))[1];
+  var result = /([LRB])\/[LRB]/.exec(getLowerText(bio_cell));
+  if (result.length < 2)
+    throw new Error("Couldn't retrieve batting handedness");
+  return result[1];
 };
 
 var getThrows = function(bio_cell) {
-  return /[LRB]\/([LRB])/.exec(getLowerText(bio_cell))[1];
+  var result = /[LRB]\/([LRB])/.exec(getLowerText(bio_cell));
+  if (result.length < 2)
+    throw new Error("Couldn't retrieve throwing handedness");
+  return result[1];
 };
 
 var getHeight = function(bio_cell) {
-  return /(\d-\d{1,2})\/\d{2,3}/.exec(getLowerText(bio_cell))[1];
+  var result =  /(\d-\d{1,2})\/\d{2,3}/.exec(getLowerText(bio_cell));
+  if (result.length < 2)
+    throw new Error("Couldn't retrieve height");
+  return result[1];
 };
 
 var getWeight = function(bio_cell) {
-  return /\d-\d{1,2}\/(\d{2,3})/.exec(getLowerText(bio_cell))[1];
+  var result = /\d-\d{1,2}\/(\d{2,3})/.exec(getLowerText(bio_cell));
+  if (result.length < 2)
+    throw new Error("Couldn't retrieve weight");
+  return result[1];
 };
 
 var getPosition = function(bio_cell) {
-  
+  var result = /position=((?:C|P|OF|1B|2B|3B|SS|DH)(\/(C|P|OF|1B|2B|3B|SS|DH))*)/
+    .exec(getLowerText(bio_cell));
+  if (result.length < 2)
+    throw new Error("Couldn't retrieve position");
+  return result[1];
 };
 
 var getDraft = function(bio_cell) {
-
 };
 
 var getContract = function(bio_cell) {

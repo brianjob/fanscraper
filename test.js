@@ -3,6 +3,7 @@ var bonds_id = '1109';
 var verlander_id = '8700';
 var vmart_id = '393';
 var nathan_id = '1122';
+var bonifacio_id = '4054';
 
 describe('player.js', function() {
   describe('seasonStats()', function() {
@@ -92,7 +93,7 @@ describe('player.js', function() {
 	   done();
 	 });
        });
-n
+
     it('should return an object describing the players draft history',
        function(done) {
 	 var player = require('./player');
