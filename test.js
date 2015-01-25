@@ -1,6 +1,8 @@
 var assert = require('assert');
 var bonds_id = '1109';
 var verlander_id = '8700';
+var vmart_id = '393';
+var nathan_id = '1122';
 
 describe('player.js', function() {
   describe('seasonStats()', function() {
@@ -41,20 +43,22 @@ describe('player.js', function() {
 
     it('should return an object containing a property with the players batting handedness',
        function(done) {
-      var player = require('./player');
-      player.seasonStats(bonds_id)
-	 .then(function(data) {
-	   assert.equal('L', data.bats);
-	   done();
-	 });
-    });
-
+	 this.timeout(3000);
+	 var player = require('./player');
+	 player.seasonStats(vmart_id)
+	   .then(function(data) {
+	     assert.equal('B', data.bats);
+	     done();
+	   });
+       });
+    
     it('should return an object containing a property with the players throwing handedness',
        function(done) {
+	 this.timeout(3000);
 	 var player = require('./player');
-	 player.seasonStats(bonds_id)
+	 player.seasonStats(vmart_id)
 	   .then(function(data) {
-	     assert.equal('L', data.throws);
+	     assert.equal('R', data.throws);
 	     done();
 	   });
        });
@@ -88,7 +92,7 @@ describe('player.js', function() {
 	   done();
 	 });
        });
-
+n
     it('should return an object describing the players draft history',
        function(done) {
 	 var player = require('./player');
@@ -111,12 +115,45 @@ describe('player.js', function() {
 	 player.seasonStats(verlander_id)
 	   .then(function(data) {
 	     var contract = data.contract;
-	     assert.equal('180,000,000', contract.dollars);
+	     assert.equal('$180M', contract.dollars);
 	     assert.equal('2013', contract.start_year);
 	     assert.equal('2019', contract.end_year);
+	     assert.equal('7', contract.length)
 	     assert.equal('1', contract.option_years);
 	     done();
 	   });
+       });
+
+    it('should return on object w/ a null contract property if no contract info',
+       function(done) {
+	 var player = require('./player');
+	 player.seasonStats(bonds_id)
+	   .then(function(data) {
+	     assert.equal(null, data.contract);
+	   });
+       });
+
+    it('should return an object describing the players contract extension if it exists',
+       function(done) {
+	 var player = require('./player');
+	 player.seasonStats(nathan_id)
+	   .then(function(data) {
+	     var extension = data.extension;
+	     assert.equal('$20M', extension.dollars);
+	     assert.equal('2014', extension.start_year);
+	     assert.equal('2015', extension.end_year);
+	     assert.equal('2', extension.length);
+	     assert.equal('1', extension.option_years);
+	   });
+       });
+
+    it('should return an object w/ null extension property if no extension info',
+       function(done) {
+	 var player = require('./player');
+	 player.seasonStats(verlander_id)
+	 .then(function(data) {
+	   assert.equal(null, data.extension);
+	 });
        });
   });
 });

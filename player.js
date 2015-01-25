@@ -77,29 +77,33 @@ var getName = function(bio_cell) {
   return bio_cell.find('strong').html();
 };
 
+var getLowerText = function(bio_cell) {
+  return bio_cell.find('div:nth-of-type(3)').html();
+};
+
 var getDob = function(bio_cell) {
   return /\d{1,2}\/\d{1,2}\/\d{4}/
-    .exec(bio_cell.find('div:nth-of-type(3)').html())[0];
+    .exec(getLowerText(bio_cell))[0];
 };
 
 var getBats = function(bio_cell) {
-  
+  return /([LRB])\/[LRB]/.exec(getLowerText(bio_cell))[1];
 };
 
 var getThrows = function(bio_cell) {
-
+  return /[LRB]\/([LRB])/.exec(getLowerText(bio_cell))[1];
 };
 
 var getHeight = function(bio_cell) {
-
+  return /(\d-\d{1,2})\/\d{2,3}/.exec(getLowerText(bio_cell))[1];
 };
 
 var getWeight = function(bio_cell) {
-
+  return /\d-\d{1,2}\/(\d{2,3})/.exec(getLowerText(bio_cell))[1];
 };
 
 var getPosition = function(bio_cell) {
-
+  
 };
 
 var getDraft = function(bio_cell) {
