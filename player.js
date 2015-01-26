@@ -125,10 +125,30 @@ var getPosition = function(bio_cell) {
 };
 
 var getDraft = function(bio_cell) {
+  var draft = {
+    year: '',
+    draft: '',
+    round: '',
+    pick: '',
+    overall: '',
+    team: ''
+  };
 };
 
 var getContract = function(bio_cell) {
+  var pattern = /(\$[\d\.]+M)\s+\/\s+(\d+)\sYears\s\((\d{4})(?:\s+-\s+(\d{4}))*\)(?:\s+\+\s+(\d{1,2})\s+Option Years)?/;
+  var result = pattern.exec(getLowerText(bio_cell));
 
+  if (!result)
+    return null;
+
+  return {
+    dollars: result[1],
+    start_year: result[2],
+    end_year: result[3] ? result[3] : result[2],
+    length: result[4],
+    option_years: result[5] ? result[5] : null
+  };
 };
 
 var getDashboard = function($) {

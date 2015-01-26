@@ -36,7 +36,7 @@ describe('player.js', function() {
 	 var player = require('./player');
 	 player.seasonStats(bonds_id)
 	   .then(function(data) {
-	     console.log(JSON.stringify(data));
+	     console.log('dob data: ' + JSON.stringify(data));
 	     assert.equal('7/24/1964', data.dob);
 	     done();
 	   });
