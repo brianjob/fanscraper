@@ -35,6 +35,7 @@ var responseHandler = function(body) {
     position               : bio.position,
     draft                  : bio.draft,
     contract               : bio.contract,
+    extension              : bio.extension,
     dashboard              : getDashboard($),
     standard               : getStandard($),
     advanced               : getAdvanced($),
@@ -69,7 +70,8 @@ var getBio = function($) {
     weight: getWeight(bio_cell),
     position: getPosition(bio_cell),
     draft: getDraft(bio_cell),
-    contract: getContract(bio_cell)
+    contract: getContract(bio_cell),
+    extension: getExtension(bio_cell)
   };
 };
 
@@ -125,18 +127,25 @@ var getPosition = function(bio_cell) {
 };
 
 var getDraft = function(bio_cell) {
+  var pattern = /Drafted:.*?(\d{4})\s+([\w\s]*\w)\s-\sRound:\s*(\d*),\s*Pick:\s*(\d*),\s*Overall:\s*(\d*),\s*Team:\s*([\w\s]*\w)/;
+  var result = pattern.exec(getLowerText(bio_cell));
+
+  if (!result)
+    return null;
+  
   var draft = {
-    year: '',
-    draft: '',
-    round: '',
-    pick: '',
-    overall: '',
-    team: ''
+    year: result[1],
+    draft: result[2],
+    round: result[3],
+    pick: result[4],
+    overall: result[5],
+    team: result[6]
   };
+  
+  return draft;
 };
 
-var getContract = function(bio_cell) {
-  var pattern = /(\$[\d\.]+M)\s+\/\s+(\d+)\sYears\s\((\d{4})(?:\s+-\s+(\d{4}))*\)(?:\s+\+\s+(\d{1,2})\s+Option Years)?/;
+var contractHelper = function(pattern, bio_cell) {
   var result = pattern.exec(getLowerText(bio_cell));
 
   if (!result)
@@ -144,15 +153,25 @@ var getContract = function(bio_cell) {
 
   return {
     dollars: result[1],
-    start_year: result[2],
-    end_year: result[3] ? result[3] : result[2],
-    length: result[4],
-    option_years: result[5] ? result[5] : null
+    length: result[2],
+    start_year: result[3],
+    end_year: result[4] ? result[4] : result[3],
+    option_years: result[5] ? result[5] : 0
   };
 };
 
-var getDashboard = function($) {
+var getContract = function(bio_cell) {
+  var pattern = /Contract:.*?(\$[\d\.]+M)\s+\/\s+(\d+)\sYears\s\((\d{4})(?:\s+-\s+(\d{4}))*\)(?:\s+\+\s+(\d{1,2})\s+Option Years)?/;
+  return contractHelper(pattern, bio_cell);
+};
 
+var getExtension = function(bio_cell) {
+  var pattern = /Extension:.*?(\$[\d\.]+M)\s+\/\s+(\d+)\sYears\s\((\d{4})(?:\s+-\s+(\d{4}))*\)(?:\s+\+\s+(\d{1,2})\s+Option Years)?/;
+  return contractHelper(pattern, bio_cell);  
+};
+
+var getDashboard = function($) {
+  
 };
              
 var getStandard = function($) {

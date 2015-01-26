@@ -4,12 +4,15 @@ var verlander_id = '8700';
 var vmart_id = '393';
 var nathan_id = '1122';
 var bonifacio_id = '4054';
+var prince_id = '4613';
+
+var timeout = 10000;
 
 describe('player.js', function() {
   describe('seasonStats()', function() {
     it('should return null if player id is not found', 
        function(done) {
-	 this.timeout(3000);
+	 this.timeout(timeout);
 	 var player = require('./player');
 	 player.seasonStats('-1')
 	   .then(function(data) {
@@ -20,11 +23,10 @@ describe('player.js', function() {
 
     it('should return an object containing a property with the players name',
        function(done) {
-	 this.timeout(3000);
+	 this.timeout(timeout);
 	 var player = require('./player');
 	 player.seasonStats(verlander_id)
 	   .then(function(data) {
-	     console.log(JSON.stringify(data));
 	     assert.equal('Justin Verlander', data.name);
 	     done();
 	   });
@@ -32,11 +34,10 @@ describe('player.js', function() {
 
     it('should return an object containing a property with the players birth date',
        function(done) {
-	 this.timeout(3000);
+	 this.timeout(timeout);
 	 var player = require('./player');
 	 player.seasonStats(bonds_id)
 	   .then(function(data) {
-	     console.log('dob data: ' + JSON.stringify(data));
 	     assert.equal('7/24/1964', data.dob);
 	     done();
 	   });
@@ -44,7 +45,7 @@ describe('player.js', function() {
 
     it('should return an object containing a property with the players batting handedness',
        function(done) {
-	 this.timeout(3000);
+	 this.timeout(timeout);
 	 var player = require('./player');
 	 player.seasonStats(vmart_id)
 	   .then(function(data) {
@@ -55,7 +56,7 @@ describe('player.js', function() {
     
     it('should return an object containing a property with the players throwing handedness',
        function(done) {
-	 this.timeout(3000);
+	 this.timeout(timeout);
 	 var player = require('./player');
 	 player.seasonStats(vmart_id)
 	   .then(function(data) {
@@ -66,6 +67,7 @@ describe('player.js', function() {
 
     it('should return an object containing the players height',
        function(done) {
+	 this.timeout(timeout);
 	 var player = require('./player');
 	 player.seasonStats(bonds_id)
 	   .then(function(data) {
@@ -76,6 +78,7 @@ describe('player.js', function() {
 
     it('should return an object containing the players weight',
        function(done) {
+	 this.timeout(timeout);
 	 var player = require('./player');
 	 player.seasonStats(bonds_id)
 	   .then(function(data) {
@@ -86,6 +89,7 @@ describe('player.js', function() {
 
     it('should return an object containing the players position',
        function(done) {
+	 this.timeout(timeout);
 	 var player = require('./player');
 	 player.seasonStats(bonds_id)
 	 .then(function(data) {
@@ -96,6 +100,7 @@ describe('player.js', function() {
 
     it('should return an object describing the players draft history',
        function(done) {
+	 this.timeout(timeout);
 	 var player = require('./player');
 	 return player.seasonStats(bonds_id)
 	   .then(function(data) {
@@ -110,8 +115,20 @@ describe('player.js', function() {
 	   });
        });
 
+    it('should return an object with a null draft property if no draft info available',
+       function(done) {
+	 this.timeout(timeout);
+	 var player = require('./player');
+	 return player.seasonStats(bonifacio_id)
+	   .then(function(data) {
+	     assert.equal(null, data.draft);
+	     done();
+	   });
+       });
+
     it('should return an object describing the players contract',
        function(done) {
+	 this.timeout(timeout);
 	 var player = require('./player');
 	 player.seasonStats(verlander_id)
 	   .then(function(data) {
@@ -125,17 +142,31 @@ describe('player.js', function() {
 	   });
        });
 
+    it('should return an object where contract.option_years = 0 for a player with no options on his contract',
+       function(done) {
+	 this.timeout(timeout);
+	 var player = require('./player');
+	 player.seasonStats(prince_id)
+	   .then(function(data) {
+	     assert.equal(0, data.contract.option_years);
+	     done();
+	   });
+       });
+
     it('should return on object w/ a null contract property if no contract info',
        function(done) {
+	 this.timeout(timeout);
 	 var player = require('./player');
 	 player.seasonStats(bonds_id)
 	   .then(function(data) {
 	     assert.equal(null, data.contract);
+	     done();
 	   });
        });
 
     it('should return an object describing the players contract extension if it exists',
        function(done) {
+	 this.timeout(timeout);
 	 var player = require('./player');
 	 player.seasonStats(nathan_id)
 	   .then(function(data) {
@@ -145,15 +176,18 @@ describe('player.js', function() {
 	     assert.equal('2015', extension.end_year);
 	     assert.equal('2', extension.length);
 	     assert.equal('1', extension.option_years);
+	     done();
 	   });
        });
 
     it('should return an object w/ null extension property if no extension info',
        function(done) {
+	 this.timeout(timeout);
 	 var player = require('./player');
 	 player.seasonStats(verlander_id)
 	 .then(function(data) {
 	   assert.equal(null, data.extension);
+	   done();
 	 });
        });
   });
